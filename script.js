@@ -5,20 +5,20 @@ document.addEventListener("DOMContentLoaded", () => {
     function searchWeather() {
         const city = searchInput.value.trim();
         if (!city) {
-            document.getElementById("weatherresult").innerText = "لطفا نام شهر را وارد کنید";
+            document.getElementById("weatherresult").innerText = "Enter a name!";
             return;
         }
         
         fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1`)
         .then(response => response.json()).then(data => {
             if(!data.results || data.results.length == 0){
-                document.getElementById("weatherresult").innerText = "شهر پیدا نشد";
+                document.getElementById("weatherresult").innerText = "No cities found with that name!";
                 return;
             }
             const place = data.results[0];
             const lat = place.latitude;
             const lon = place.longitude;
-            const country = place.country;
+        
 
             fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,wind_speed_10m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max,uv_index_max,uv_index_clear_sky_max&forecast_days=4&timezone=auto&hourly=temperature_2m`
             ).then(response => response.json()).then(data => {
@@ -150,15 +150,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 });
                 
-                // Make sure the chart container has a defined height
                 document.getElementById('chart').style.height = '500px';
 
             }).catch(err => {
-                document.getElementById("weatherresult").innerText = "خطا در دریافت اطلاعات";
+                document.getElementById("weatherresult").innerText = "Error in collecting data!";
                 console.error(err);
             });
         }).catch(err => {
-            document.getElementById("weatherresult").innerText = "خطا در جستجوی شهر";
+            document.getElementById("weatherresult").innerText = "Error in founding the city!";
             console.error(err);
         });
     }
